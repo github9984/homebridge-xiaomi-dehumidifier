@@ -1,0 +1,32 @@
+{
+  "name": "homebridge-widetech-dehumidifier",
+  "version": "1.0.0",
+  "description": "Homebridge plugin for controlling Xiaomi New Widetech Dehumidifier",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/github9984/homebridge-widetech-dehumidifier.git"
+  },
+  "author": "Razvan Gavril",
+  "license": "MIT",
+  "keywords": [
+    "homebridge-plugin",
+    "npm",
+    "node",
+    "homebridge-widetech-dehumidifier"
+  ],
+  "bugs": {
+    "url": "https://github.com/github9984/homebridge-widetech-dehumidifier/issues"
+  },
+  "homepage": "https://github.com/github9984/homebridge-widetech-dehumidifier#readme",
+  "engines": {
+    "homebridge": ">=0.2.0",
+    "miio": ">=0.15.6"
+  },
+  "dependencies": {
+    "miio": "github:kingkong123/miio"
+  }
+}
