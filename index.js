@@ -23,9 +23,8 @@ function Dehumidifier(log, config) {
     this.polling_interval = config['polling_interval'];
     this.max_humidity = config['max_humidity'];
     this.min_humidity = config['min_humidity'];
+
     this.device = new MIoTDevice(config['did'], config['token'], config['ip']);
-
-
 
     this.device.onChange('power', value => {
         that.updateActive();
@@ -35,7 +34,7 @@ function Dehumidifier(log, config) {
 
     this.device.onChange('mode', value => {
         that.updateTargetHumidifierDehumidifierState();
-        that.updateDryClothesMode();
+        that.updateDryMode();
     });
 
     this.device.onChange('temp', value => {
@@ -132,8 +131,8 @@ Dehumidifier.prototype.getServices = function () {
 
     this.service
         .getCharacteristic(Characteristic.SwingMode)
-        .on('get', this.getDryClothesMode.bind(this))
-        .on('set', this.setDryClothesMode.bind(this))
+        .on('get', this.getDryMode.bind(this))
+        .on('set', this.setDryMode.bind(this))
 
     // LED
     if (this.enableLED) {
@@ -165,7 +164,6 @@ Dehumidifier.prototype.getServices = function () {
         .getCharacteristic(Characteristic.OccupancyDetected)
         .on('get', this.getWaterTank.bind(this));
 
-
     // Temperature Sensor
     this.temperatureSensorService = new Service.TemperatureSensor('Temperature');
 
@@ -193,8 +191,6 @@ Dehumidifier.prototype.getServices = function () {
     this.services.push(this.humiditySensorService);
     this.services.push(this.waterTankService);
 
-
-
     return this.services;
 }
 
@@ -202,7 +198,9 @@ Dehumidifier.prototype.getActive = function (callback) {
     this.log('getActive');
 
     try {
-        if (this.device.get('power') == true) {
+        var value = this.device.get('power');
+
+        if (value == true) {
             return callback(null, Characteristic.Active.ACTIVE);
         } else {
             return callback(null, Characteristic.Active.INACTIVE);
@@ -252,7 +250,9 @@ Dehumidifier.prototype.getCurrentHumidifierDehumidifierState = function (callbac
     this.log('getCurrentHumidifierDehumidifierState');
 
     try {
-        if (this.device.get('power') == true) {
+        var value = this.device.get('power');
+
+        if (value == true) {
             return callback(null, Characteristic.CurrentHumidifierDehumidifierState.DEHUMIDIFYING);
         } else {
             return callback(null, Characteristic.CurrentHumidifierDehumidifierState.INACTIVE);
@@ -301,7 +301,6 @@ Dehumidifier.prototype.getTargetHumidifierDehumidifierState = function (callback
         callback(e);
     }
 }
-
 
 Dehumidifier.prototype.setTargetHumidifierDehumidifierState = function (targetState, callback, context) {
     this.log('setTargetHumidifierDehumidifierState ' + targetState + ' ' + context);
@@ -359,7 +358,6 @@ Dehumidifier.prototype.updateTargetHumidifierDehumidifierState = function () {
     }
 }
 
-
 Dehumidifier.prototype.getRelativeHumidityDehumidifierThreshold = function (callback) {
     this.log('getRelativeHumidityDehumidifierThreshold');
 
@@ -371,7 +369,6 @@ Dehumidifier.prototype.getRelativeHumidityDehumidifierThreshold = function (call
         callback(e);
     }
 }
-
 
 Dehumidifier.prototype.setRelativeHumidityDehumidifierThreshold = function (targetState, callback, context) {
 
@@ -414,17 +411,13 @@ Dehumidifier.prototype.updateRelativeHumidityDehumidifierThreshold = function ()
     }
 }
 
-
-
-
-
-
-
 Dehumidifier.prototype.getLockPhysicalControls = function (callback) {
     this.log('getLockPhysicalControls');
 
     try {
-        if (this.device.get('child_lock') == true) {
+        var value = this.device.get('child_lock');
+
+        if (value == true) {
             return callback(null, Characteristic.LockPhysicalControls.CONTROL_LOCK_ENABLED);
         } else {
             return callback(null, Characteristic.LockPhysicalControls.CONTROL_LOCK_DISABLED);
@@ -456,7 +449,6 @@ Dehumidifier.prototype.setLockPhysicalControls = function (targetState, callback
 
 Dehumidifier.prototype.updateLockPhysicalControls = function () {
 
-
     try {
         var value = this.device.get('child_lock');
 
@@ -472,30 +464,30 @@ Dehumidifier.prototype.updateLockPhysicalControls = function () {
     }
 }
 
-
-
-Dehumidifier.prototype.getDryClothesMode = function (callback) {
-    this.log('getDryClothesMode');
+Dehumidifier.prototype.getDryMode = function (callback) {
+    this.log('getDryMode');
 
     try {
         var value = this.device.get('mode');
 
-        if (value == 1) {
-            callback(null, Characteristic.SwingMode.SWING_DISABLED);
-        } else if (value == 2) {
-            callback(null, Characteristic.SwingMode.SWING_DISABLED);
-        } else if (value == 3) {
-            callback(null, Characteristic.SwingMode.SWING_ENABLED);
+        switch (value) {
+            case 1:
+            case 2:
+                return callback(null, Characteristic.SwingMode.SWING_DISABLED);
+            case 3:
+                return callback(null, Characteristic.SwingMode.SWING_ENABLED);
+            default:
+                return callback(null, Characteristic.SwingMode.SWING_DISABLED);
         }
 
     } catch (e) {
-        this.log('getDryClothesMode Failed: ' + e);
+        this.log('getDryMode Failed: ' + e);
         callback(e);
     }
 }
 
-Dehumidifier.prototype.setDryClothesMode = function (targetState, callback, context) {
-    this.log('setDryClothesMode ' + targetState + ' ' + context);
+Dehumidifier.prototype.setDryMode = function (targetState, callback, context) {
+    this.log('setDryMode ' + targetState + ' ' + context);
 
     if (context === 'fromOutsideHomekit') { return callback(); }
 
@@ -508,13 +500,12 @@ Dehumidifier.prototype.setDryClothesMode = function (targetState, callback, cont
 
         callback();
     } catch (e) {
-        this.log('setDryClothesMode Failed: ' + e);
+        this.log('setDryMode Failed: ' + e);
         callback(e);
     }
 }
 
-Dehumidifier.prototype.updateDryClothesMode = function () {
-
+Dehumidifier.prototype.updateDryMode = function () {
 
     try {
         var value = this.device.get('mode');
@@ -531,13 +522,11 @@ Dehumidifier.prototype.updateDryClothesMode = function () {
             .getCharacteristic(Characteristic.SwingMode)
             .setValue(targetValue, undefined, 'fromOutsideHomekit');
 
-        this.log('updateDryClothesMode to ' + value);
+        this.log('updateDryMode to ' + value);
     } catch (e) {
-        this.log('updateDryClothesMode Failed: ' + e);
+        this.log('updateDryMode Failed: ' + e);
     }
 }
-
-
 
 Dehumidifier.prototype.getStatusActive = function (callback) {
     this.log('getStatusActive');
@@ -559,17 +548,13 @@ Dehumidifier.prototype.updateStatusActive = function () {
         var value = this.device.get('power');
 
         if (value == true) {
-
             this.temperatureSensorService.setCharacteristic(Characteristic.StatusActive, true);
             this.humiditySensorService.setCharacteristic(Characteristic.StatusActive, true);
             this.waterTankService.setCharacteristic(Characteristic.StatusActive, true);
-
         } else {
-
             this.temperatureSensorService.setCharacteristic(Characteristic.StatusActive, false);
             this.humiditySensorService.setCharacteristic(Characteristic.StatusActive, false);
             this.waterTankService.setCharacteristic(Characteristic.StatusActive, true);
-
         }
 
         this.log('updateStatusActive to ' + value);
@@ -578,9 +563,6 @@ Dehumidifier.prototype.updateStatusActive = function () {
         this.log('updateStatusActive Failed: ' + e);
     }
 }
-
-
-
 
 Dehumidifier.prototype.getTemperature = function (callback) {
     this.log("getTemperature");
@@ -610,7 +592,9 @@ Dehumidifier.prototype.getHumidity = function (callback) {
     this.log("getHumidity");
 
     try {
-        return callback(null, this.device.get('humidity'));
+        var value = this.device.get('humidity');
+
+        return callback(null, value);
     } catch (e) {
         this.log('getHumidity Failed: ' + e);
         callback(e);
@@ -618,7 +602,6 @@ Dehumidifier.prototype.getHumidity = function (callback) {
 }
 
 Dehumidifier.prototype.updateHumidity = function () {
-
 
     try {
         var value = this.device.get('humidity');
@@ -654,7 +637,6 @@ Dehumidifier.prototype.updateWaterTank = function () {
         this.log('updateWaterTank Failed: ' + e);
     }
 }
-
 
 Dehumidifier.prototype.getLED = function (callback) {
     this.log('getLED');
@@ -692,7 +674,6 @@ Dehumidifier.prototype.setLED = function (targetState, callback, context) {
 
 Dehumidifier.prototype.updateLED = function () {
 
-
     try {
         var value = this.device.get('led');
 
@@ -705,7 +686,6 @@ Dehumidifier.prototype.updateLED = function () {
         this.log('updateLED Failed: ' + e);
     }
 }
-
 
 Dehumidifier.prototype.getBuzzer = function (callback) {
     this.log('getBuzzer');
@@ -727,13 +707,12 @@ Dehumidifier.prototype.setBuzzer = function (targetState, callback, context) {
     if (context === 'fromOutsideHomekit') { return callback(); }
 
     try {
-        if (targetState == true){
+        if (targetState == true) {
             this.device.set('buzzer', true);
         }
-        else{
+        else {
             this.device.set('buzzer', false);
         }
-        
 
         callback();
     } catch (e) {
@@ -744,11 +723,10 @@ Dehumidifier.prototype.setBuzzer = function (targetState, callback, context) {
 
 Dehumidifier.prototype.updateBuzzer = function () {
 
-
     try {
         var value = this.device.get('buzzer');
 
-         this.buzzerService
+        this.buzzerService
             .getCharacteristic(Characteristic.On)
             .setValue(value, undefined, 'fromOutsideHomekit');
 
