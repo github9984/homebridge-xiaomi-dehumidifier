@@ -1,0 +1,23 @@
+{
+	"bridge": {
+		"name": "Homebridge",
+		"username": "CC:22:3D:E3:CE:30",
+		"port": 51826,
+		"pin": "123-45-568"
+	},
+
+	"accessories": [
+		{
+			"accessory": "MiDehumidifier",
+			"name": "Living Room Dehumidifier",
+			"did": "xxxxxxxxxxxx",
+			"ip": "192.168.1.x",
+			"token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+			"enableLED": false,
+			"enableBuzzer": false,
+			"max_humidity": 70,
+			"min_humidity": 30,
+			"polling_interval": 60000
+		}
+	]
+}
