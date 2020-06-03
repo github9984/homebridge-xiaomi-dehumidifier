@@ -10,7 +10,6 @@
     "type": "git",
     "url": "git+https://github.com/github9984/homebridge-xiaomi-dehumidifier.git"
   },
-  "author": "Calvin Zhang",
   "license": "MIT",
   "keywords": [
     "homebridge-plugin",
