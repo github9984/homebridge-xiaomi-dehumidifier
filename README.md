@@ -5,7 +5,7 @@
  
  
 
-![homebridge-xiaomi-dehumidifier](https://i.ytimg.com/vi/RQBV1Pzyt3o/hqdefault.jpg)
+![homebridge-xiaomi-dehumidifier](https://cf.shopee.co.th/file/9b42218eab81d360e2696abb9005ef23)
 
 *** Please note: This only tested for the New Widetech Dehumidifier 30L.
 
@@ -88,9 +88,9 @@
 			"polling_interval": 60000
 		 }
 		]
-	```
+```
 
-	**Notes:** Set value for `enableLED` , `enableBuzzer` to **true** or **false** to show or hide these sensors in Home app.
+**Notes:** Set value for `enableLED` , `enableBuzzer` to **true** or **false** to show or hide these sensors in Home app.
 
 8. Restart Homebridge, and your device will be added to Home app.
 
