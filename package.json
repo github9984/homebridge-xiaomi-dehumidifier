@@ -24,7 +24,7 @@
   "homepage": "https://github.com/github9984/homebridge-xiaomi-dehumidifier#readme",
   "engines": {
     "homebridge": ">=0.2.0",
-    "miio": ">=0.15.6"
+    "miio": ">=0.15.5"
   },
   "dependencies": {
     "miio": "github:github9984/miio"
