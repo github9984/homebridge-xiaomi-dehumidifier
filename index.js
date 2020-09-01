@@ -1,7 +1,5 @@
 'use strict';
-// https://github.com/aschzero/homebridge-airmega/blob/master/lib/services/PurifierService.ts
-// http://miot-spec.org/miot-spec-v2/instance?type=urn:miot-spec-v2:device:air-purifier:0000A007:zhimi-ma4:1
-// https://github.com/Colorado4Wheeler/HomeKit-Bridge/wiki/HomeKit-Model-Reference
+// http://miot-spec.org/miot-spec-v2/instance?type=urn:miot-spec-v2:device:dehumidifier:0000A02D:nwt-330ef:1
 
 var Service, Characteristic;
 var MIoTDevice = require('./MIoTDehumidifier');
@@ -86,7 +84,7 @@ Dehumidifier.prototype.getServices = function () {
     this.informationService
         .setCharacteristic(Characteristic.Name, this.name)
         .setCharacteristic(Characteristic.Manufacturer, 'Xiaomi')
-        .setCharacteristic(Characteristic.Model, 'WDH330EFW1')
+        .setCharacteristic(Characteristic.Model, 'nwt.derh.330ef')
         .setCharacteristic(Characteristic.SerialNumber, this.did)
         .setCharacteristic(Characteristic.FirmwareRevision, '1.0.0')
 
